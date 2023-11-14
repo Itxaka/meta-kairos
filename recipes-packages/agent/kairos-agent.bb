@@ -1,15 +1,15 @@
 DESCRIPTION = "Kairos agent"
-SRC_URI = "https://github.com/Itxaka/kairos-agent/releases/download/v2.5.6-qcs6490/kairos-agent-v2.5.6-qcs6490-Linux-arm64.tar.gz"
+SRC_URI = "https://github.com/kairos-io/kairos-agent/releases/download/v2.4.1-qcs6490/kairos-agent-v2.4.1-qcs6490-Linux-arm64.tar.gz"
 SRC_URI += "file://10_c6490.yaml"
 SRC_URI += "file://cos-setup-reconcile.timer"
 SRC_URI += "file://cos-setup-reconcile.service"
 SRC_URI += "file://cos-setup-fs.service"
 SRC_URI += "file://cos-setup-boot.service"
 SRC_URI += "file://cos-setup-network.service"
-# No idea how the license checksum works, this just disables
+# No idea how the license checksum works, this just disables it completely
 LICENSE = "CLOSED"
 # Disable url checksum
-BB_STRICT_CHECKSUM = "0"
+SRC_URI[sha256sum] = "6674c4cddfce36279c72b1bec5ef98798760c3e9aedfa5435101684f5c4e4f0e"
 FILES_${PN} += "${base_bindir}/kairos-agent \
     /oem/10_c6490.yaml \
     /etc/systemd/system/cos-setup-reconcile.timer \
@@ -19,7 +19,6 @@ FILES_${PN} += "${base_bindir}/kairos-agent \
     /etc/systemd/system/cos-setup-network.service"
 
 pkg_postinst_${PN} += "${do_postinstall_enable_services}"
-DEPENDS += "parted gptfdisk e2fsprogs util-linux rsync sudo"
 
 
 do_install () {
