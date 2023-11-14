@@ -19,7 +19,7 @@ FILES_${PN} += "${base_bindir}/kairos-agent \
     /etc/systemd/system/cos-setup-network.service"
 
 pkg_postinst_${PN} += "${do_postinstall_enable_services}"
-DEPENDS += "parted gptfdisk e2fsprogs util-linux"
+DEPENDS += "parted gptfdisk e2fsprogs util-linux rsync sudo"
 
 
 do_install () {
