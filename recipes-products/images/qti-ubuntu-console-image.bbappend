@@ -6,8 +6,7 @@ CORE_IMAGE_BASE_INSTALL += " \
 "
 ROOTFS_POSTPROCESS_COMMAND += "do_fix_sudo; "
 
-addtask do_fix_sudo after do_ubuntu_rootfs before do_rootfs
-
+# Fix sudo perms under ubuntu as they are missing the setuid bit
 do_fix_sudo(){
     bbwarn "Fix sudo"
     sudo chown -R root:root ${IMAGE_ROOTFS}/usr/bin/sudo
