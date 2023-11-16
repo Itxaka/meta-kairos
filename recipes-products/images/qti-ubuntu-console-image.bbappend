@@ -2,6 +2,7 @@
 CORE_IMAGE_BASE_INSTALL += " \
 			kairos-agent \
 			kairos-configs \
+			k3s \
 "
 ROOTFS_POSTPROCESS_COMMAND += "do_fix_sudo; "
 

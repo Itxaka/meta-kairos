@@ -4,4 +4,7 @@ UBUN_DEPENDENCES += " \
     parted \
     gdisk \
     rsync \
+    iptables \
+    nftables \
+    ipset \
 "
