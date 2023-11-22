@@ -15,7 +15,8 @@ SRC_URI += "file://cos-setup-reconcile"
 # No idea how the license checksum works, this just disables it completely
 LICENSE = "CLOSED"
 # Disable url checksum
-SRC_URI[sha256sum] = "6674c4cddfce36279c72b1bec5ef98798760c3e9aedfa5435101684f5c4e4f0e"
+SRC_URI[sha256sum] = "db112a2c6215dc8d556ea07baa8d931e25169b64576c5f00bdad4fea9eff12af"
+
 FILES_${PN} += "${base_bindir}/kairos-agent \
     /oem/10_c6490.yaml \
     /etc/systemd/system/cos-setup-reconcile.timer \
