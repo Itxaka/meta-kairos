@@ -1,0 +1,13 @@
+[Unit]
+Description=cOS system rootfs setup
+DefaultDependencies=no
+After=cos-setup-initramfs.service
+Before=sysinit.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/kairos-agent run-stage rootfs
+
+[Install]
+WantedBy=sysinit.target

@@ -6,6 +6,12 @@ SRC_URI += "file://cos-setup-reconcile.service"
 SRC_URI += "file://cos-setup-fs.service"
 SRC_URI += "file://cos-setup-boot.service"
 SRC_URI += "file://cos-setup-network.service"
+SRC_URI += "file://cos-setup-initramfs.service"
+SRC_URI += "file://cos-setup-rootfs.service"
+SRC_URI += "file://kairos-agent.service"
+SRC_URI += "file://motd"
+SRC_URI += "file://bash.bashrc.local"
+SRC_URI += "file://cos-setup-reconcile"
 # No idea how the license checksum works, this just disables it completely
 LICENSE = "CLOSED"
 # Disable url checksum
@@ -16,26 +22,42 @@ FILES_${PN} += "${base_bindir}/kairos-agent \
     /etc/systemd/system/cos-setup-reconcile.service \
     /etc/systemd/system/cos-setup-fs.service \
     /etc/systemd/system/cos-setup-boot.service \
-    /etc/systemd/system/cos-setup-network.service"
+    /etc/systemd/system/cos-setup-network.service \
+    /etc/systemd/system/cos-setup-initramfs.service \
+    /etc/systemd/system/cos-setup-rootfs.service \
+    /etc/systemd/system/kairos-agent.service \
+    /etc/motd \
+    /etc/bash.bashrc.local \
+    /usr/bin/cos-setup-reconcile \
+"
 
 pkg_postinst_${PN} += "${do_postinstall_enable_services}"
 # Remove warning about binary being stripped, we know.
 INSANE_SKIP_${PN} += "already-stripped"
 
 do_install () {
-    install -d ${D}${base_bindir}
+    install -d -p ${D}/etc
+    install -d -p ${D}${base_bindir}
+    install -d -p ${D}/oem
+    install -d -p ${D}/etc/systemd/system/
+    install -d -p ${D}/usr/bin/
     cp ${WORKDIR}/kairos-agent ${D}${base_bindir}/kairos-agent
     chown root.root ${D}${base_bindir}/kairos-agent
+    # install other files
+    install -m 0644 -p ${WORKDIR}/bash.bashrc.local ${D}/etc/bash.bashrc.local
+    install -m 0644 -p ${WORKDIR}/motd ${D}/etc/motd
+    install -m 0755 -p ${WORKDIR}/cos-setup-reconcile ${D}/usr/bin/cos-setup-reconcile
     # install oem file specific for the board
-    install -d -p ${D}/oem
-    install -m 0755 ${WORKDIR}/10_c6490.yaml ${D}/oem/10_c6490.yaml
+    install -m 0755 -p ${WORKDIR}/10_c6490.yaml ${D}/oem/10_c6490.yaml
     # Install services and link them
-    install -d -p ${D}/etc/systemd/system/
-    install -m 0644 ${WORKDIR}/cos-setup-reconcile.timer ${D}/etc/systemd/system/cos-setup-reconcile.timer
-    install -m 0644 ${WORKDIR}/cos-setup-reconcile.service ${D}/etc/systemd/system/cos-setup-reconcile.service
-    install -m 0644 ${WORKDIR}/cos-setup-fs.service ${D}/etc/systemd/system/cos-setup-fs.service
-    install -m 0644 ${WORKDIR}/cos-setup-boot.service ${D}/etc/systemd/system/cos-setup-boot.service
-    install -m 0644 ${WORKDIR}/cos-setup-network.service ${D}/etc/systemd/system/cos-setup-network.service
+    install -m 0644 -p ${WORKDIR}/cos-setup-reconcile.timer ${D}/etc/systemd/system/cos-setup-reconcile.timer
+    install -m 0644 -p ${WORKDIR}/cos-setup-reconcile.service ${D}/etc/systemd/system/cos-setup-reconcile.service
+    install -m 0644 -p ${WORKDIR}/cos-setup-fs.service ${D}/etc/systemd/system/cos-setup-fs.service
+    install -m 0644 -p ${WORKDIR}/cos-setup-boot.service ${D}/etc/systemd/system/cos-setup-boot.service
+    install -m 0644 -p ${WORKDIR}/cos-setup-network.service ${D}/etc/systemd/system/cos-setup-network.service
+    install -m 0644 -p ${WORKDIR}/cos-setup-initramfs.service ${D}/etc/systemd/system/cos-setup-initramfs.service
+    install -m 0644 -p ${WORKDIR}/cos-setup-rootfs.service ${D}/etc/systemd/system/cos-setup-rootfs.service
+    install -m 0644 -p ${WORKDIR}/kairos-agent.service ${D}/etc/systemd/system/kairos-agent.service
 }
 
 
@@ -45,6 +67,8 @@ do_postinstall_enable_services() {
         systemctl --root=$D enable cos-setup-fs.service
         systemctl --root=$D enable cos-setup-boot.service
         systemctl --root=$D enable cos-setup-network.service
+        systemctl --root=$D enable cos-setup-initramfs.service
+        systemctl --root=$D enable cos-setup-rootfs.service
     fi
 }
 

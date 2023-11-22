@@ -1,0 +1,12 @@
+[Unit]
+Description=cOS system initramfs setup
+DefaultDependencies=no
+Before=sysinit.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/kairos-agent run-stage initramfs
+
+[Install]
+WantedBy=sysinit.target
