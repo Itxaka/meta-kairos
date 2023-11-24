@@ -5,7 +5,7 @@ After=network-online.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/bin/kairos-agent run-stage network
+ExecStart=kairos-agent run-stage network
 
 [Install]
 WantedBy=multi-user.target

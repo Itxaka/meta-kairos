@@ -1,3 +1,6 @@
+# bring systemd so we can use SYSTEMD_SERVICE_${PN} to enable our services
+inherit systemd
+
 DESCRIPTION = "Kairos agent"
 SRC_URI = "https://github.com/kairos-io/kairos-agent/releases/download/v2.4.1-qcs6490/kairos-agent-v2.4.1-qcs6490-Linux-arm64.tar.gz"
 SRC_URI += "file://10_c6490.yaml"
@@ -32,9 +35,18 @@ FILES_${PN} += "${base_bindir}/kairos-agent \
     /usr/bin/cos-setup-reconcile \
 "
 
-pkg_postinst_${PN} += "${do_postinstall_enable_services}"
 # Remove warning about binary being stripped, we know.
 INSANE_SKIP_${PN} += "already-stripped"
+
+# Enable services
+SYSTEMD_SERVICE_${PN} = " \
+    cos-setup-reconcile.timer \
+    cos-setup-fs.service \
+    cos-setup-boot.service \
+    cos-setup-network.service \
+    cos-setup-initramfs.service \
+    cos-setup-rootfs.service \
+"
 
 do_install () {
     install -d -p ${D}/etc
@@ -60,16 +72,3 @@ do_install () {
     install -m 0644 -p ${WORKDIR}/cos-setup-rootfs.service ${D}/etc/systemd/system/cos-setup-rootfs.service
     install -m 0644 -p ${WORKDIR}/kairos-agent.service ${D}/etc/systemd/system/kairos-agent.service
 }
-
-
-do_postinstall_enable_services() {
-    if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
-        systemctl --root=$D enable cos-setup-reconcile.timer
-        systemctl --root=$D enable cos-setup-fs.service
-        systemctl --root=$D enable cos-setup-boot.service
-        systemctl --root=$D enable cos-setup-network.service
-        systemctl --root=$D enable cos-setup-initramfs.service
-        systemctl --root=$D enable cos-setup-rootfs.service
-    fi
-}
-
